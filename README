@@ -1,0 +1,27 @@
+NOTE: BELOW K8S Setup using kubeadmin is tested in my env based on Openstack so may be some changes you have to do when runing this on your env.
+
+
+STEP 1: CREATE 2 CENTOS VMS ON ANY CLOUD PROVIDER
+NOTE: both vms should be accessable with each's others with keybased authantication mechanism
+
+STEP 2: LOGIN TO MASTER NODE AND SAVE THIS FILE AS HOSTS_FILE
+[master]
+master1 ansible_host=<MASTERIP> ansible_user=root
+[workers]
+worker1 ansible_host=<SLAVE_IP> ansible_user=root
+
+STEP 3: EXECUTE BELOW COMMAND TO SETUP KUBERNETES.
+# ansible-playbook  -i HOSTS_FILE install-dependencies.yaml
+# ansible-playbook  -i HOSTS_FILE master.yaml
+# ansible-playbook  -i HOSTS_FILE worker.yaml
+
+STEP 4: GOTO SLAVE VM AND BUILD DOCKER IMAGES.
+git clone <REOP>
+#Create Docker Images for reverse-proxy-nginx (side car) container.
+cd assign/nginx-dockerfile ; docker build -t reverse-proxy-nginx:1.0 .
+
+#Create Docker Images for mayank-app
+cd ../app-dockerfile; docker build -t mayank-app:1.0 .
+
+STEP 5: EXECUTE THE BELOW SCRIPT TO DEPLOY FULL APP ENV
+chmod +x DEPLOY-ENV.sh ;  bash DEPLOY-ENV.sh

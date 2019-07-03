@@ -1,0 +1,87 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name: disable SELinux
+     command: setenforce 0
+     ignore_errors: yes
+
+   - name: disable SELinux on reboot
+     selinux:
+       state: disabled
+     ignore_errors: yes
+
+   - name: Swapoff
+     raw: swapoff -a
+ 
+   - name: load br_netfilter module
+     raw: modprobe br_netfilter && /bin/echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+   - name: install Docker
+     yum:
+       name: docker
+       state: present
+       update_cache: true
+
+   - name: Restart docker services
+     raw: systemctl daemon-reload ; systemctl restart docker
+
+   - name: install yum-utils
+     yum:
+       name: yum-utils
+       state: present
+       update_cache: true
+
+   - name: install lvm2
+     yum:
+       name: lvm2
+       state: present
+       update_cache: true
+
+   - name: install device-mapper-persistent-data 
+     yum:
+       name: device-mapper-persistent-data
+       state: present
+       update_cache: true
+
+   - name: start Docker
+     service:
+       name: docker
+       state: started
+
+   - name: add Kubernetes' YUM repository
+     yum_repository:
+      name: Kubernetes
+      description: Kubernetes YUM repository
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      gpgcheck: yes
+
+   - name: install kubelet
+     yum:
+        name: kubelet-1.13.3
+        state: present
+        update_cache: true
+     environment:
+
+   - name: install kubeadm
+     yum:
+        name: kubeadm-1.13.3
+        state: present
+
+   - name: start kubelet
+     service:
+       name: kubelet
+       enabled: yes
+       state: started
+
+   - name: edit cgroup and restart kubelet
+     raw: sed -i 's/cgroup-driver=systemd/cgroup-driver=cgroupfs/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf && systemctl daemon-reload && systemctl restart kubelet
+
+- hosts: master
+  become: yes
+  tasks:
+   - name: install kubectl
+     yum:
+        name: kubectl-1.13.3
+        state: present
+        allow_downgrade: yes
