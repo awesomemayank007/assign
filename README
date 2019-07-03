@@ -16,7 +16,7 @@ STEP 3: EXECUTE BELOW COMMAND TO SETUP KUBERNETES.
 # ansible-playbook  -i HOSTS_FILE worker.yaml
 
 STEP 4: GOTO SLAVE VM AND BUILD DOCKER IMAGES.
-git clone <REOP>
+cd ; git clone https://github.com/awesomemayank007/assign.git
 #Create Docker Images for reverse-proxy-nginx (side car) container.
 cd assign/nginx-dockerfile ; docker build -t reverse-proxy-nginx:1.0 .
 
@@ -24,4 +24,4 @@ cd assign/nginx-dockerfile ; docker build -t reverse-proxy-nginx:1.0 .
 cd ../app-dockerfile; docker build -t mayank-app:1.0 .
 
 STEP 5: EXECUTE THE BELOW SCRIPT TO DEPLOY FULL APP ENV
-chmod +x DEPLOY-ENV.sh ;  bash DEPLOY-ENV.sh
+cd ..; chmod +x DEPLOY-ENV.sh ;  bash DEPLOY-ENV.sh
