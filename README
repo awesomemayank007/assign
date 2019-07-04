@@ -25,3 +25,6 @@ cd ../app-dockerfile; docker build -t mayank-app:1.0 .
 
 STEP 5: EXECUTE THE BELOW SCRIPT TO DEPLOY FULL APP ENV
 cd ..; chmod +x DEPLOY-ENV.sh ;  bash DEPLOY-ENV.sh
+
+STEP 6: TEST Auto-Scalling USING BELOW COMMAND.
+# docker run --rm loadimpact/loadgentest-wrk -c 600 -t 600 -d 15m http://<NODE_IP>:30500
