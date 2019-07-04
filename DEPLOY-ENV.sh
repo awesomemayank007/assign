@@ -32,6 +32,6 @@ kubectl -n assign create -f HPA.yaml
 echo " WAITING FOR POD TO COME UP"
 sleep 20
 #STEP 7: Increase load on APP to see the autoscalling
-docker run --rm loadimpact/loadgentest-wrk -c 300 -t 100 -d 15m http://<NODE_IP>:30500
+docker run --rm loadimpact/loadgentest-wrk -c 300 -t 100 -d 15m http://<NODE_IP>:30500/users
 
 echo " user this url to connect with application = http://<NODE_IP>:30500/users"
