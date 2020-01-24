@@ -27,7 +27,7 @@ func duplicate_count(list []string) map[string]int {
 func WordbyWordScan() {
 //  var tmp string      
   var result []string
-  file, err := os.Open("test.txt")
+  file, err := os.Open("sample_data.txt")
   if err != nil {
     log.Fatal(err)
   }
